@@ -20,6 +20,10 @@ class CCMakersWSL
     String  _hostname;
     int ReadWiFiSSID(char* buffer);
     int ReadWiFiPassword(char* buffer);
+    void initRoutes();
+    String logoSVG();
+    String createPage(String body, String javascript);
+    String createPage(String body);
 
   public:
     CCMakersWSL(String ssid, String hostname);
