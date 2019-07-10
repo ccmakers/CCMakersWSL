@@ -16,10 +16,15 @@
 class CCMakersWSL
 {
   private:
-    int _pin;
+    String  _ssid;
+    String  _hostname;
+    int ReadWiFiSSID(char* buffer);
+    int ReadWiFiPassword(char* buffer);
+
   public:
-    CCMakersWSL(int pin);
-    void ping();
+    CCMakersWSL(String ssid, String hostname);
+    void boot();
+    void start();
 };
 
 #endif
