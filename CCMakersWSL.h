@@ -16,16 +16,13 @@
 class CCMakersWSL
 {
   private:
-    String  _ssid;
-    String  _hostname;
-    int ReadWiFiSSID(char* buffer);
-    int ReadWiFiPassword(char* buffer);
     void initRoutes();
-    String logoSVG();
-    String createPage(String body, String javascript);
-    String createPage(String body);
+    static CCMakersWSL* singletonInstance;
 
   public:
+    String  _ssid;
+    String  _hostname;
+    static CCMakersWSL* getInstance();
     CCMakersWSL(String ssid, String hostname);
     void boot();
     void start();
