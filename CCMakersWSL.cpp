@@ -13,8 +13,8 @@ int ReadWiFiPassword(char* buffer);
 void WriteWifiCredentials(char* ssid, char* password);
 
 // Page layout helpers
-String createPage(String body, String javascript);
-String createPage(String body);
+String _createPage(String body, String javascript);
+String _createPage(String body);
 String logoSVG();
 
 // Route functions
@@ -43,8 +43,16 @@ CCMakersWSL::CCMakersWSL(String ssid, String hostname) {
   boot();
 }
 
+void CCMakersWSL::on(const String &uri, ESP8266WebServer::THandlerFunction handler) {
+  _server.on(uri, handler);
+}
+
+void CCMakersWSL::send(int code, char* content_type, const String& content) {
+  _server.send(code, (const char*)content_type, content);
+}
+
 void CCMakersWSL::boot() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   char ssid[128], password[128];
   IPAddress local_IP(192, 168, 4, 1);
@@ -64,8 +72,6 @@ void CCMakersWSL::boot() {
 
   //Setup WiFi Access Point and Station
   // Connecting to WiFi network
-  Serial.println();
-  Serial.println("Starting WiFi service.");
   delay(5);
 
   WiFi.mode(WIFI_AP_STA);
@@ -98,20 +104,29 @@ void CCMakersWSL::boot() {
   digitalWrite(ledPin, 0);//signal setup is complete
 }
 
-void CCMakersWSL::start() {
+void CCMakersWSL::begin() {
+  _server.begin();
+}
+
+void CCMakersWSL::handleClient() {
   _server.handleClient();
 }
 
 void CCMakersWSL::initRoutes() {
-
-  _server.on("/", handleRoot);
-  _server.on("/restart", handleRestart);
-  _server.on("/configure", handleConfigure);
-  _server.on("/store", handleWiFiStore);
-  _server.on("/do-restart", performRestart);
+  on("/", handleRoot);
+  on("/restart", handleRestart);
+  on("/configure", handleConfigure);
+  on("/store", handleWiFiStore);
+  on("/do-restart", performRestart);
   _server.onNotFound(handleNotFound);
+}
 
-  _server.begin();
+String CCMakersWSL::createPage(String body, String javascript) {
+  return _createPage(body, javascript);
+}
+
+String CCMakersWSL::createPage(String body) {
+  return _createPage(body);
 }
 
 int ReadWiFiSSID(char* buffer) {
@@ -167,7 +182,7 @@ void WriteWifiCredentials(char* ssid, char* password) {
 }
 
 
-String createPage(String body, String javascript) {
+String _createPage(String body, String javascript) {
   String page = R"=====(
 <html>
   <head>
@@ -265,8 +280,8 @@ String createPage(String body, String javascript) {
   return page;
 }
 
-String createPage(String body) {
-  return createPage(body, "");
+String _createPage(String body) {
+  return _createPage(body, "");
 }
 
 String logoSVG() {
@@ -276,7 +291,7 @@ String logoSVG() {
 void handleRoot() {
   String hostname = CCMakersWSL::getInstance()->_hostname;
   String webpage = "<h3>" + hostname + "</h3>";
-  _server.send(200, "text/html", createPage(webpage)); //Send web page
+  _server.send(200, "text/html", _createPage(webpage)); //Send web page
 }
 
 void handleRestart() {
@@ -292,7 +307,7 @@ void handleRestart() {
       window.location.href = '/do-restart';
     });
   )";
-  _server.send(200, "text/html", createPage(webpage, js)); //Send web page
+  _server.send(200, "text/html", _createPage(webpage, js)); //Send web page
 }
 
 void handleConfigure() {
@@ -309,7 +324,7 @@ void handleConfigure() {
   webpage += String(password) + "\"><br><br>";
   webpage += "<input type=\"submit\" value=\"Configure\">";
   webpage += "</form>";
-  _server.send(200, "text/html", createPage(webpage)); //Send web page
+  _server.send(200, "text/html", _createPage(webpage)); //Send web page
 }
 
 void handleWiFiStore() {
@@ -324,7 +339,7 @@ void handleWiFiStore() {
     webpage += "<h3>Failed to update WiFi. Form error.</h3>";
     webpage += "<br><a href=\"/\">Node Main</a><br>";
   }
-  _server.send(200, "text/html", createPage(webpage)); //Send web page
+  _server.send(200, "text/html", _createPage(webpage)); //Send web page
   delay(100);
   ESP.restart();
 }
@@ -335,5 +350,5 @@ void performRestart() {
 
 void handleNotFound() {
   String webpage = "<h3>Page Not Found</h3>";
-  _server.send(404, "text/html", createPage(webpage));
+  _server.send(404, "text/html", _createPage(webpage));
 }

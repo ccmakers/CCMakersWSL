@@ -17,6 +17,7 @@ class CCMakersWSL
 {
   private:
     void initRoutes();
+    void boot();
     static CCMakersWSL* singletonInstance;
 
   public:
@@ -24,8 +25,12 @@ class CCMakersWSL
     String  _hostname;
     static CCMakersWSL* getInstance();
     CCMakersWSL(String ssid, String hostname);
-    void boot();
-    void start();
+    void begin();
+    void handleClient();
+    void on(const String &uri, ESP8266WebServer::THandlerFunction handler);
+    void send(int code, char* content_type, const String& content);
+    String createPage(String body);
+    String createPage(String body, String javascript);
 };
 
 #endif
