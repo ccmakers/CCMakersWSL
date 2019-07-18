@@ -84,7 +84,7 @@ void CCMakersWSL::boot() {
     int timeout = 0;
     Serial.println("Attempting to connect to local WiFi.");
     WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED && timeout < 50) { //50 loops at 100ms per loop is 5 secs
+    while (WiFi.status() != WL_CONNECTED && timeout < 100) { //50 loops at 100ms per loop is 5 secs
       delay(100);
       ++timeout;
     }
