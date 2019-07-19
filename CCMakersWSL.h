@@ -17,10 +17,10 @@ class CCMakersWSL
 {
   private:
     void initRoutes();
-    void boot();
     static CCMakersWSL* singletonInstance;
 
   public:
+    void boot();
     String  _ssid;
     String  _hostname;
     static CCMakersWSL* getInstance();
