@@ -20,12 +20,12 @@ class CCMakersWSL
     static CCMakersWSL* singletonInstance;
 
   public:
-    void boot();
     String  _ssid;
     String  _hostname;
     static CCMakersWSL* getInstance();
     CCMakersWSL(String ssid, String hostname);
-    void begin();
+    void bootWiFi();
+    void bootWebUI();
     void handleClient();
     void on(const String &uri, ESP8266WebServer::THandlerFunction handler);
     void send(int code, char* content_type, const String& content);

@@ -47,7 +47,7 @@ void CCMakersWSL::send(int code, char* content_type, const String& content) {
   _server.send(code, (const char*)content_type, content);
 }
 
-void CCMakersWSL::boot() {
+void CCMakersWSL::bootWiFi() {
 
   if (!Serial) {
     Serial.begin(9600);
@@ -92,7 +92,7 @@ void CCMakersWSL::boot() {
   Serial.println();
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("Connected to WiFi. SSID: |" + String(ssid) + "| Password: |" + String(password) + "|");
-    Serial.println("Local IP: " + WiFi.localIP().toString());
+    Serial.println("Local IP: http://" + WiFi.localIP().toString() + "/");
   } else {
     Serial.println("Could not connect to WiFi. SSID: |" + String(ssid) + "| Password: |" + String(password) + "|");
   }
@@ -101,7 +101,7 @@ void CCMakersWSL::boot() {
   initRoutes();
 }
 
-void CCMakersWSL::begin() {
+void CCMakersWSL::bootWebUI() {
   _server.begin();
 }
 
