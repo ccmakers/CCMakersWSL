@@ -7,6 +7,8 @@ CCMakersWSL* CCMakersWSL::singletonInstance = NULL;
 #define WIFI_SSID_ADDR          0x008
 #define WIFI_PASSWORD_ADDR      0x088
 
+// #define PRINT_FUNCTION String(__FUNCTION__)
+
 // EEPROM Manipulation functions
 int ReadWiFiSSID(char* buffer);
 int ReadWiFiPassword(char* buffer);
@@ -24,8 +26,16 @@ void handleConfigure();
 void handleWiFiStore();
 void performRestart();
 void handleNotFound();
+void handleUserRoutes();
 
 ESP8266WebServer _server(80);
+
+typedef struct Routes_struct{
+    char subscribed;
+    char route[64];
+} Routes;
+
+Routes subscriptions[64];
 
 CCMakersWSL* CCMakersWSL::getInstance() {
    if (!singletonInstance)   // Only allow one instance of class to be generated.
@@ -40,6 +50,15 @@ CCMakersWSL::CCMakersWSL(String ssid, String hostname) {
 }
 
 void CCMakersWSL::on(const String &uri, ESP8266WebServer::THandlerFunction handler) {
+  // Add to array of routes
+  for (int i = 0; i < 64; i++){
+    if (subscriptions[i].subscribed == 0) {
+      subscriptions[i].subscribed = 1;
+      strcpy(subscriptions[i].route, uri.c_str());
+      break;
+    }
+  }
+
   _server.on(uri, handler);
 }
 
@@ -48,6 +67,10 @@ void CCMakersWSL::send(int code, char* content_type, const String& content) {
 }
 
 void CCMakersWSL::bootWiFi() {
+
+  for (int i = 0; i < 64; i++) {
+    subscriptions[i].subscribed = 0;
+  }
 
   if (!Serial) {
     Serial.begin(9600);
@@ -77,6 +100,8 @@ void CCMakersWSL::bootWiFi() {
   WiFi.softAPConfig(local_IP, gateway, subnet);
   WiFi.softAP(_ssid);
   delay(25);
+
+  WiFi.scanNetworks(true, false);
 
   if (strlen(ssid) > 0 && strlen(password) > 0) {
     int timeout = 0;
@@ -115,6 +140,7 @@ void CCMakersWSL::initRoutes() {
   on("/configure", handleConfigure);
   on("/store", handleWiFiStore);
   on("/do-restart", performRestart);
+  on("/routes", handleUserRoutes);
   _server.onNotFound(handleNotFound);
 }
 
@@ -247,6 +273,37 @@ String _createPage(String body, String javascript) {
         -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
         box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
       }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        vertical-align: top;
+      }
+
+      table th,
+      table td {
+        padding: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      table tbody {
+        vertical-align: inherit;
+      }
+
+      table td {
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      table thead th {
+        vertical-align: bottom;
+        border-bottom-color: #495057;
+      }
+
+      table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+      }
     </style>
   </head>
   <body>
@@ -257,6 +314,7 @@ String _createPage(String body, String javascript) {
           <li><a href="/">Home</a></li>
           <li><a href="/configure">Configure WiFi</a></li>
           <li><a href="/restart">Restart Node</a></li>
+          <li><a href="/routes">Routes</a></li>
           <li>%CONNECTMSG%</li>
         </ul>
       </nav>
@@ -361,3 +419,23 @@ void handleNotFound() {
   String webpage = "<h3>Page Not Found</h3>";
   _server.send(404, "text/html", _createPage(webpage));
 }
+
+void handleUserRoutes() {
+  String webpage = R"(
+    <h3>Routes</h3>
+    <table>
+      <tr>
+        <th>Route</th>
+      </tr>
+  )";
+
+  for (int i = 0; i < 64; i++){
+    if (subscriptions[i].subscribed == 1) {
+      webpage += "<tr><td><a href='" + String(subscriptions[i].route) +"'>"+String(subscriptions[i].route) +"</a></td></tr>";
+    }
+  }
+
+  webpage += "</table>";
+  _server.send(404, "text/html", _createPage(webpage));
+}
+
