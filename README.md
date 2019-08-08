@@ -4,7 +4,7 @@ The CCMakersWSL class is a wrapper for [esp8266](https://github.com/esp8266/) Wi
 
 ## Installation
 
-Download the latest version of the library [here](https://github.com/ccmakers/CCMakersWSL/archive/1.0.0.zip). In the Arduino IDE, navigate to *Sketch > Include Library > Add .ZIP Library*.
+Download the latest version of the library [here](https://github.com/ccmakers/CCMakersWSL/archive/1.0.1.zip). In the Arduino IDE, navigate to *Sketch > Include Library > Add .ZIP Library*.
 
 You will be prompted to select the library you would like to add. Navigate to the .zip file's location and open it.
 
