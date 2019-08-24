@@ -34,9 +34,12 @@ typedef struct Routes_struct{
 
 Routes subscriptions[64];
 
+String hn; // for use on the homepage
+
 CCMakersWSL::CCMakersWSL(String ssid, String hostname) {
   _ssid = ssid;
   _hostname = hostname;
+  hn = _hostname;
 }
 
 void CCMakersWSL::on(const String &uri, ESP8266WebServer::THandlerFunction handler) {
@@ -338,7 +341,7 @@ String logoSVG() {
 
 // Built-in routes
 void handleRoot() {
-  String webpage = "<h3>Welcome!</h3>";
+  String webpage = "<h3>"+hn+"</h3>";
   _server.send(200, "text/html", _createPage(webpage)); //Send web page
 }
 
