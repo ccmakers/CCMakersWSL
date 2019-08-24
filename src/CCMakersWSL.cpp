@@ -424,9 +424,6 @@ void handleUserRoutes() {
   String webpage = R"(
     <h3>Routes</h3>
     <table>
-      <tr>
-        <th>Route</th>
-      </tr>
   )";
 
   for (int i = 0; i < 64; i++){
