@@ -100,6 +100,18 @@ String webpage = R"=====(
 webserver.send(200, "text/html", webserver.createPage(webpage));
 ```
 
+Or if you want to write some javacript
+```cpp
+String webpage = R"=====(
+  <h3>Javascript Example</h3>
+)=====";
+
+String js = R"=====(
+  console.log('hi!');
+)=====";
+webserver.send(200, "text/html", webserver.createPage(webpage, js));
+```
+
 The markup is as follows:
 
 ```html
