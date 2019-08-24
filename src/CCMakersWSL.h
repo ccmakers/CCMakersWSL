@@ -17,12 +17,10 @@ class CCMakersWSL
 {
   private:
     void initRoutes();
-    static CCMakersWSL* singletonInstance;
 
   public:
     String  _ssid;
     String  _hostname;
-    static CCMakersWSL* getInstance();
     CCMakersWSL(String ssid, String hostname);
     void bootWiFi();
     void bootWebUI();
