@@ -1,9 +1,6 @@
 #include <Arduino.h>
 #include <CCMakersWSL.h>
 
-CCMakersWSL* CCMakersWSL::singletonInstance = NULL;
-
-
 #define WIFI_SSID_ADDR          0x008
 #define WIFI_PASSWORD_ADDR      0x088
 
@@ -37,16 +34,12 @@ typedef struct Routes_struct{
 
 Routes subscriptions[64];
 
-CCMakersWSL* CCMakersWSL::getInstance() {
-   if (!singletonInstance)   // Only allow one instance of class to be generated.
-      singletonInstance = new CCMakersWSL("MakerBeacon", "MakerNode");
-   return singletonInstance;
-}
-
+String hn; // for use on the homepage
 
 CCMakersWSL::CCMakersWSL(String ssid, String hostname) {
   _ssid = ssid;
   _hostname = hostname;
+  hn = _hostname;
 }
 
 void CCMakersWSL::on(const String &uri, ESP8266WebServer::THandlerFunction handler) {
@@ -348,8 +341,7 @@ String logoSVG() {
 
 // Built-in routes
 void handleRoot() {
-  String hostname = CCMakersWSL::getInstance()->_hostname;
-  String webpage = "<h3>" + hostname + "</h3>";
+  String webpage = "<h3>"+hn+"</h3>";
   _server.send(200, "text/html", _createPage(webpage)); //Send web page
 }
 
@@ -424,9 +416,6 @@ void handleUserRoutes() {
   String webpage = R"(
     <h3>Routes</h3>
     <table>
-      <tr>
-        <th>Route</th>
-      </tr>
   )";
 
   for (int i = 0; i < 64; i++){
