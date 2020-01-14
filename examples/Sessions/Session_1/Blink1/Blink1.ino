@@ -6,26 +6,15 @@ CCMakersWSL webserver("MakerBeacon", "MakerNode");
 void blinkHandler() {
   String webpage = R"=====(
     <h3>Blink Example</h3>
-    <button id="blinkButton">blink</button>
+    <a href="/do-blink">blink</a>
   )=====";
 
-  String js = R"=====(
-    var element = document.getElementById('blinkButton');
-    element.addEventListener('click', function() {
-      fetch('/do-blink')
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(myJson) {
-        console.log(JSON.stringify(myJson));
-      });
-    });
-  )=====";
-  webserver.send(200, "text/html", webserver.createPage(webpage, js));
+  webserver.send(200, "text/html", webserver.createPage(webpage));
 }
 
 void doBlink() {
-  webserver.send(200, "text/plain", "ok");
+  webserver.sendHeader("Location", "/blink", true);   //Redirect to our html web page
+  webserver.send(302, "text/plane","");
   digitalWrite(2, 0);
   delay(1000);
   digitalWrite(2, 1);
