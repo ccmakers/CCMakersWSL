@@ -27,6 +27,7 @@ class CCMakersWSL
     void handleClient();
     void on(const String &uri, ESP8266WebServer::THandlerFunction handler);
     void send(int code, char* content_type, const String& content);
+    void sendHeader(const String& name, const String& value, bool first);
     String createPage(String body);
     String createPage(String body, String javascript);
 };

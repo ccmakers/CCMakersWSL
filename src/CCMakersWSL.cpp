@@ -59,6 +59,10 @@ void CCMakersWSL::send(int code, char* content_type, const String& content) {
   _server.send(code, (const char*)content_type, content);
 }
 
+void CCMakersWSL::sendHeader(const String& name, const String& value, bool first) {
+  _server.sendHeader(name, value, first);
+}
+
 void CCMakersWSL::bootWiFi() {
 
   for (int i = 0; i < 64; i++) {
