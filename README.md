@@ -91,6 +91,33 @@ Sending responses to the client. Typically used inside route's function handler.
 webserver.send(200, "text/text", "Hello World");
 ```
 
+#### void sendHeader(const String& name, const String& value, bool first);
+Perform server side redirect
+```cpp
+  webserver.sendHeader("Location", "/your-redirected-route", true);
+  webserver.send(302, "text/plain","");
+```
+
+#### bool hasArg(const String& name);
+Check if query string argument is present
+```cpp
+  if (webserver.hasArg("msg"))
+  {
+    // has "msg" argument
+    ...
+  }
+```
+
+#### String arg(const String& name);
+Retrieve query string argument
+```cpp
+  if (webserver.hasArg("msg"))
+  {
+    String msg = webserver.arg("msg");
+    ...
+  }
+```
+
 #### String createPage(String body, [Optional: String javascript]);
 Help format HTML interfaces. Typically used in conjunction with `send()` function.
 ```cpp

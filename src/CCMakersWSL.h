@@ -26,6 +26,8 @@ class CCMakersWSL
     void bootWebUI();
     void handleClient();
     void on(const String &uri, ESP8266WebServer::THandlerFunction handler);
+    bool hasArg(const String& name);
+    String arg(const String& name);
     void send(int code, char* content_type, const String& content);
     void sendHeader(const String& name, const String& value, bool first);
     String createPage(String body);
