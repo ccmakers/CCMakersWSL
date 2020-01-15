@@ -63,11 +63,11 @@ void CCMakersWSL::sendHeader(const String& name, const String& value, bool first
   _server.sendHeader(name, value, first);
 }
 
-bool hasArg(const String& name) {
+bool CCMakersWSL::hasArg(const String& name) {
   return _server.hasArg(name);
 }
 
-String arg(const String& name) {
+String CCMakersWSL::arg(const String& name) {
   return _server.arg(name);
 }
 
